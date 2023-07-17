@@ -7,9 +7,9 @@ import getMovies from '../api/getMovies'
 
 import Loading from './Loading'
 
-import './index.css'
+import './movieList.css'
 
-interface IMovie {
+export interface IMovie {
   id: number
   title: string
   release_date: string

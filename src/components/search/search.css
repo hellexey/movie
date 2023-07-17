@@ -1,0 +1,22 @@
+.movie-search {
+    display: flex;
+    width: 938px;
+    height: 40px;
+    margin: 100px auto 0 auto;
+    background-color: #1a1c1c;
+    border: 1px solid #858585
+}
+.movie-search:hover {
+    border: 1px solid white;
+}
+
+.movie-search:focus {
+    border: 1px solid white;
+}
+
+.movie-search::placeholder {
+    color: #858585;
+}
+
+
+

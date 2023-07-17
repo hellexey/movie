@@ -18,10 +18,7 @@ async function getMovies(): Promise<IMovie[]> {
     },
   }
 
-  const response = await fetch(
-    'https://api.themoviedb.org/3/search/movie?query=the&include_adult=false&language=en-US&page=1',
-    options
-  )
+  const response = await fetch('https://api.themoviedb.org/3/search/movie?query=the', options)
 
   if (!response.ok) {
     throw new Error(`Failed to fetch movies: ${response.statusText}`)
