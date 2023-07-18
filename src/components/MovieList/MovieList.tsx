@@ -1,40 +1,33 @@
 import React, { useState, useEffect } from 'react'
 import { format } from 'date-fns'
-import { Alert } from 'antd'
+import { Alert, Pagination } from 'antd'
 
 import descriptionCut from '../utils/descriptionCut'
-import getMovies from '../api/getMovies'
+import getMovies, { IMovie } from '../api/getMovies'
 
 import Loading from './Loading'
 
 import './movieList.css'
 
-export interface IMovie {
-  id: number
-  title: string
-  release_date: string
-  genres: { name: string }[]
-  overview: string
-  poster_path: string
-  loading: boolean
+interface MovieListProps {
+  searchQuery: string
 }
 
-const MovieList = () => {
+const MovieList = ({ searchQuery }: MovieListProps) => {
   const [movies, setMovies] = useState<IMovie[]>([])
+  const [page, setPage] = useState<number>(1)
   const [error, setError] = useState<string | null>(null)
   const [networkError, setNetworkError] = useState<boolean>(false)
+  const [totalPages, setTotalPages] = useState<number>(0)
+  const defaultPoster =
+    'https://static.displate.com/857x1200/displate/2022-04-15/7422bfe15b3ea7b5933dffd896e9c7f9_46003a1b7353dc7b5a02949bd074432a.jpg'
 
   useEffect(() => {
     const loadMovies = async () => {
       try {
-        const movies = await getMovies()
-        const loadingMovies = movies.map((movie: IMovie) => ({ ...movie, loading: true }))
-        setMovies(loadingMovies)
-
-        setTimeout(() => {
-          const loadedMovies = movies.map((movie: IMovie) => ({ ...movie, loading: false }))
-          setMovies(loadedMovies)
-        }, 1000)
+        const { results, totalPages } = await getMovies(searchQuery, page)
+        setMovies(results)
+        setTotalPages(totalPages)
       } catch (error) {
         console.error(error)
 
@@ -51,7 +44,7 @@ const MovieList = () => {
     loadMovies().catch((error) => {
       console.error(error)
     })
-  }, [])
+  }, [searchQuery, page])
 
   return (
     <div className="movie-list">
@@ -62,10 +55,16 @@ const MovieList = () => {
             <Loading />
           ) : (
             <>
-              <img className="poster" src={`https://image.tmdb.org/t/p/w185${movie.poster_path}`} alt={movie.title} />
+              <img
+                className="poster"
+                src={movie.poster_path ? `https://image.tmdb.org/t/p/w185${movie.poster_path}` : defaultPoster}
+                alt={movie.title}
+              />
               <div className="movie-info">
                 <h1 className="movie-name">{movie.title}</h1>
-                <h2 className="movie-year">{format(new Date(movie.release_date), 'MMMM dd, yyyy')}</h2>
+                {movie.release_date && (
+                  <h2 className="movie-year">{format(new Date(movie.release_date), 'MMMM dd, yyyy')}</h2>
+                )}
                 <h3 className="movie-genre">action, rpg</h3>
                 <p className="description">{descriptionCut(movie.overview)}</p>
               </div>
@@ -73,6 +72,7 @@ const MovieList = () => {
           )}
         </div>
       ))}
+      <Pagination total={totalPages} current={page} onChange={(page) => setPage(page)} />
     </div>
   )
 }
