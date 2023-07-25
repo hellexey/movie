@@ -1,20 +1,12 @@
-export interface IMovie {
-  id: number
-  title: string
-  release_date: string
-  genres: { name: string }[]
-  overview: string
-  poster_path: string
-  loading: boolean
-  totalPages: number
-  vote_average: number
-}
+import { IMovie } from './getMovies'
+
 interface IMovieApiResponse {
   totalPages: number
   results: IMovie[]
 }
-async function getMovies(searchQuery: string, page: number): Promise<IMovieApiResponse> {
-  if (!searchQuery) {
+
+export async function getRatedMovies(guestSessionId: string | null, page: number): Promise<IMovieApiResponse> {
+  if (!guestSessionId) {
     return {
       totalPages: 0,
       results: [],
@@ -29,14 +21,16 @@ async function getMovies(searchQuery: string, page: number): Promise<IMovieApiRe
     },
   }
 
-  const response = await fetch(`https://api.themoviedb.org/3/search/movie?query=${searchQuery}&page=${page}`, options)
+  const response = await fetch(
+    `https://api.themoviedb.org/3/guest_session/${guestSessionId}/rated/movies?page=${page}`,
+    options
+  )
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch movies: ${response.statusText}`)
+    throw new Error(`Failed to fetch rated movies: ${response.statusText}`)
   }
 
   const data = await response.json()
 
   return { totalPages: data.total_pages, results: data.results }
 }
-export default getMovies

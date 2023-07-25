@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import { Alert, Pagination, Rate } from 'antd'
+import { Alert, Pagination } from 'antd'
 
-import handleRatingChange from '../api/handleRatingChange'
+import { getRatedMovies } from '../api/getRatedMovies'
 import descriptionCut from '../utils/descriptionCut'
-import getMovies, { IMovie } from '../api/getMovies'
-import ratingColor from '../utils/ratingColor'
+import { IMovie } from '../api/getMovies'
+import Loading from '../MovieList/Loading'
 
-import Loading from './Loading'
+import '../MovieList/movieList.css'
 
-import './movieList.css'
-
-interface MovieListProps {
-  searchQuery: string
-}
-
-const MovieList = ({ searchQuery }: MovieListProps) => {
+const RatedMovies = () => {
+  const guestSessionId = localStorage.getItem('guestSessionId')
   const [movies, setMovies] = useState<IMovie[]>([])
   const [page, setPage] = useState<number>(1)
   const [error, setError] = useState<string | null>(null)
@@ -27,7 +22,11 @@ const MovieList = ({ searchQuery }: MovieListProps) => {
   useEffect(() => {
     const loadMovies = async () => {
       try {
-        const { results, totalPages } = await getMovies(searchQuery, page)
+        if (!guestSessionId) {
+          setMovies([])
+          return
+        }
+        const { results, totalPages } = await getRatedMovies(guestSessionId, page)
         setMovies(results)
         setTotalPages(totalPages)
       } catch (error) {
@@ -46,7 +45,7 @@ const MovieList = ({ searchQuery }: MovieListProps) => {
     loadMovies().catch((error) => {
       console.error(error)
     })
-  }, [searchQuery, page])
+  }, [guestSessionId, page])
 
   return (
     <div className="movie-list">
@@ -63,31 +62,13 @@ const MovieList = ({ searchQuery }: MovieListProps) => {
                 alt={movie.title}
               />
               <div className="movie-info">
-                <div className="movie-header">
-                  <h1 className="movie-name">{movie.title}</h1>
-                  <div
-                    className="movie-rating"
-                    style={{
-                      border: `2px solid ${ratingColor(movie.vote_average)}`,
-                    }}
-                  >
-                    {movie.vote_average.toFixed(1)}
-                  </div>
-                </div>
+                <h1 className="movie-name">{movie.title}</h1>
+                <div className="movie-rating"> {movie.vote_average}</div>
                 {movie.release_date && (
                   <h2 className="movie-year">{format(new Date(movie.release_date), 'MMMM dd, yyyy')}</h2>
                 )}
                 <h3 className="movie-genre">action, rpg</h3>
                 <p className="description">{descriptionCut(movie.overview)}</p>
-                <Rate
-                  allowHalf
-                  defaultValue={0}
-                  count={10}
-                  className="rating"
-                  onChange={(rating) => {
-                    handleRatingChange(movie.id, rating)
-                  }}
-                />
               </div>
             </>
           )}
@@ -98,4 +79,4 @@ const MovieList = ({ searchQuery }: MovieListProps) => {
   )
 }
 
-export default MovieList
+export default RatedMovies

@@ -4,7 +4,8 @@
     height: 40px;
     margin: 100px auto 0 auto;
     background-color: #1a1c1c;
-    border: 1px solid #858585
+    border: 1px solid #858585;
+    color: #dadada;
 }
 .movie-search:hover {
     border: 1px solid white;

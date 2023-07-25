@@ -1,0 +1,6 @@
+.tabs {
+    display: flex;
+    align-items: center;
+    color: #858585;
+    margin-top: 20px;
+}
