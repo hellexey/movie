@@ -1,31 +1,17 @@
-const handleRatingChange = async (movieId: number, rating: number) => {
-  try {
-    const guestSessionId = localStorage.getItem('guestSessionId')
-    const options = {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/json;charset=utf-8',
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlY2IzMGIwZjg5ZmEzM2I5OWVhODNlNGVlODZkN2Y4MyIsInN1YiI6IjY0OTU5Y2E5ZDVmZmNiMDBhZDg1MDJlOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.UTMTmKFtngCrTMB-a5BQE8pYAuxyzHCACsGotO5u-R0',
-      },
-      body: JSON.stringify({ value: rating }),
-    }
+import { IMovie } from './getMovies'
 
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/rating?guest_session_id=${guestSessionId}`,
-      options
-    )
+const handleRatingChange = async (movie: IMovie, rating: number) => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const ratedMovies = JSON.parse(localStorage.getItem('ratedMovies')!) || []
+  const existingMovieIndex = ratedMovies.findIndex((ratedMovie: IMovie) => ratedMovie.id === movie.id)
 
-    if (!response.ok) {
-      throw new Error(`Failed to rate movie: ${response.statusText}`)
-    }
-
-    return await response.json()
-  } catch (err) {
-    console.error(err)
-    throw err
+  if (existingMovieIndex >= 0) {
+    ratedMovies[existingMovieIndex].vote_average = rating
+  } else {
+    ratedMovies.push({ ...movie, vote_average: rating })
   }
+
+  localStorage.setItem('ratedMovies', JSON.stringify(ratedMovies))
 }
 
 export default handleRatingChange

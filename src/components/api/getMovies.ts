@@ -8,6 +8,7 @@ export interface IMovie {
   loading: boolean
   totalPages: number
   vote_average: number
+  genre_ids: number[]
 }
 interface IMovieApiResponse {
   totalPages: number

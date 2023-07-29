@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { format } from 'date-fns'
-import { Alert, Pagination, Rate } from 'antd'
+import { Alert, Pagination } from 'antd'
 
-import handleRatingChange from '../api/handleRatingChange'
-import descriptionCut from '../utils/descriptionCut'
 import getMovies, { IMovie } from '../api/getMovies'
-import ratingColor from '../utils/ratingColor'
-
-import Loading from './Loading'
-
 import './movieList.css'
+import MovieCard from '../MovieCard'
 
 interface MovieListProps {
   searchQuery: string
@@ -21,8 +15,6 @@ const MovieList = ({ searchQuery }: MovieListProps) => {
   const [error, setError] = useState<string | null>(null)
   const [networkError, setNetworkError] = useState<boolean>(false)
   const [totalPages, setTotalPages] = useState<number>(0)
-  const defaultPoster =
-    'https://static.displate.com/857x1200/displate/2022-04-15/7422bfe15b3ea7b5933dffd896e9c7f9_46003a1b7353dc7b5a02949bd074432a.jpg'
 
   useEffect(() => {
     const loadMovies = async () => {
@@ -52,46 +44,7 @@ const MovieList = ({ searchQuery }: MovieListProps) => {
     <div className="movie-list">
       {error && <Alert message={error} type={networkError ? 'warning' : 'error'} />}
       {movies.map((movie) => (
-        <div className="movie" key={movie.id}>
-          {movie.loading ? (
-            <Loading />
-          ) : (
-            <>
-              <img
-                className="poster"
-                src={movie.poster_path ? `https://image.tmdb.org/t/p/w185${movie.poster_path}` : defaultPoster}
-                alt={movie.title}
-              />
-              <div className="movie-info">
-                <div className="movie-header">
-                  <h1 className="movie-name">{movie.title}</h1>
-                  <div
-                    className="movie-rating"
-                    style={{
-                      border: `2px solid ${ratingColor(movie.vote_average)}`,
-                    }}
-                  >
-                    {movie.vote_average.toFixed(1)}
-                  </div>
-                </div>
-                {movie.release_date && (
-                  <h2 className="movie-year">{format(new Date(movie.release_date), 'MMMM dd, yyyy')}</h2>
-                )}
-                <h3 className="movie-genre">action, rpg</h3>
-                <p className="description">{descriptionCut(movie.overview)}</p>
-                <Rate
-                  allowHalf
-                  defaultValue={0}
-                  count={10}
-                  className="rating"
-                  onChange={(rating) => {
-                    handleRatingChange(movie.id, rating)
-                  }}
-                />
-              </div>
-            </>
-          )}
-        </div>
+        <MovieCard movie={movie} key={movie.id} />
       ))}
       <Pagination total={totalPages} current={page} onChange={(page) => setPage(page)} />
     </div>
