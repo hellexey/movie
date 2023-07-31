@@ -28,11 +28,9 @@
     margin-right: 20px;
 }
 
-.movie-list .movie-info {
+.movie-list .movie-title {
     display: flex;
-    flex-direction: column;
-    flex-basis: 100%;
-    padding: 10px 20px 20px 20px;
+    justify-content: space-between;
 }
 
 .movie-list .movie-name {
@@ -56,11 +54,11 @@
 
 .movie-list .movie-genre {
     margin: 10px 0;
-    color: #9d9c9a;
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+
 }
 
 .movie-list .description {
@@ -79,12 +77,17 @@
 .movie-list .rating {
     margin: 10px 0;
     font-size: 13px;
+    box-shadow: 0 0 10px rgba(73, 73, 73, 0.5);
+}
+.ant-rate-star.ant-rate-star-zero {
+    color: #c99c42;
 }
 
 .movie-list .movie-rating {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 15px 0;
     width: 40px;
     height: 40px;
     border-radius: 50%;

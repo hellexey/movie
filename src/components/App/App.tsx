@@ -11,8 +11,7 @@ import getGenres from '../api/getGenres'
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useState<string>('the')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
-  const [genres, setGenres] = useContext(GenresContext)
+  const setGenres = useContext(GenresContext)[1]
 
   useEffect(() => {
     createGuestSession()
@@ -26,7 +25,6 @@ const App = () => {
       try {
         const genres = await getGenres()
         setGenres(genres)
-        console.log(genres)
       } catch (error) {
         console.error(error)
       }

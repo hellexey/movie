@@ -1,6 +1,6 @@
 import React from 'react'
 import { format } from 'date-fns'
-import { Rate } from 'antd'
+import { Rate, Tag } from 'antd'
 import './movieCard.css'
 
 import { GenresContext } from '../GenresContext/GenresContext'
@@ -23,13 +23,14 @@ const MovieCard = ({ movie }: MovieCardProps) => {
   const ratedMovie = ratedMovies.find((ratedMovie: IMovie) => ratedMovie.id === movie.id)
   const rating = ratedMovie ? ratedMovie.vote_average : 0
   const [genres] = React.useContext(GenresContext)
-  console.log(genres)
-
   const getGenreNames = () => {
     return genres
       .filter((genre) => movie.genre_ids.includes(genre.id))
-      .map((genre) => genre.name)
-      .join(', ')
+      .map((genre) => (
+        <Tag key={genre.id} color={'#575757'}>
+          {genre.name}
+        </Tag>
+      ))
   }
 
   return (
@@ -44,14 +45,16 @@ const MovieCard = ({ movie }: MovieCardProps) => {
             alt={movie.title}
           />
           <div className="movie-info">
-            <h1 className="movie-name">{movie.title}</h1>
-            <div
-              className="movie-rating"
-              style={{
-                border: `2px solid ${ratingColor(movie.vote_average)}`,
-              }}
-            >
-              {movie.vote_average.toFixed(1)}
+            <div className="movie-title">
+              <h1 className="movie-name">{movie.title}</h1>
+              <div
+                className="movie-rating"
+                style={{
+                  border: `2px solid ${ratingColor(movie.vote_average)}`,
+                }}
+              >
+                {movie.vote_average.toFixed(1)}
+              </div>
             </div>
             {movie.release_date && (
               <h2 className="movie-year">{format(new Date(movie.release_date), 'MMMM dd, yyyy')}</h2>

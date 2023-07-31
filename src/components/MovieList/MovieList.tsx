@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Alert, Pagination } from 'antd'
 
 import getMovies, { IMovie } from '../api/getMovies'
-import './movieList.css'
 import MovieCard from '../MovieCard'
 
 interface MovieListProps {

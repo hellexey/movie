@@ -14,7 +14,8 @@ async function getGenres(): Promise<IGenre[]> {
   if (!response.ok) {
     throw new Error(`Failed to fetch genres: ${response.statusText}`)
   }
-  return await response.json()
+  const data = await response.json()
+  return data.genres
 }
 
 export default getGenres

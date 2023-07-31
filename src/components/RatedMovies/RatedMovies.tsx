@@ -4,8 +4,6 @@ import { Alert, Pagination } from 'antd'
 import { IMovie } from '../api/getMovies'
 import MovieCard from '../MovieCard'
 
-import '../MovieList/movieList.css'
-
 const RatedMovies = () => {
   const [movies, setMovies] = useState<IMovie[]>([])
   const [page, setPage] = useState<number>(1)
