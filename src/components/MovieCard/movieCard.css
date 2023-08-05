@@ -1,6 +1,6 @@
 .movie-list {
     width: 1010px;
-    height: 1147px;
+    height: 200px;
     flex-shrink: 0;
     display: flex;
     flex-wrap: wrap;

@@ -36,7 +36,7 @@ const RatedMovies = () => {
     <div className="movie-list">
       {error && <Alert message={error} type={networkError ? 'warning' : 'error'} />}
       {movies.map((movie) => (
-        <MovieCard movie={movie} key={movie.id} />
+        <MovieCard movie={movie} key={movie.id} networkError={networkError} />
       ))}
       <Pagination total={totalPages * 10} current={page} onChange={(page) => setPage(page)} />
     </div>

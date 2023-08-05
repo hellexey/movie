@@ -4,6 +4,8 @@ import { Alert, Pagination } from 'antd'
 import getMovies, { IMovie } from '../api/getMovies'
 import MovieCard from '../MovieCard'
 
+import Loading from './Loading'
+
 interface MovieListProps {
   searchQuery: string
 }
@@ -14,6 +16,7 @@ const MovieList = ({ searchQuery }: MovieListProps) => {
   const [error, setError] = useState<string | null>(null)
   const [networkError, setNetworkError] = useState<boolean>(false)
   const [totalPages, setTotalPages] = useState<number>(0)
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const loadMovies = async () => {
@@ -21,6 +24,7 @@ const MovieList = ({ searchQuery }: MovieListProps) => {
         const { results, totalPages } = await getMovies(searchQuery, page)
         setMovies(results)
         setTotalPages(totalPages)
+        setLoading(false)
       } catch (error) {
         console.error(error)
 
@@ -31,9 +35,11 @@ const MovieList = ({ searchQuery }: MovieListProps) => {
           setError('Failed to fetch movies.')
           setMovies([])
         }
+        setLoading(false)
       }
     }
 
+    setLoading(true)
     loadMovies().catch((error) => {
       console.error(error)
     })
@@ -41,10 +47,10 @@ const MovieList = ({ searchQuery }: MovieListProps) => {
 
   return (
     <div className="movie-list">
+      {loading && <Loading />}
+      {movies.length === 0 && !loading && !networkError && <Alert message="No movies found" type="info" />}
       {error && <Alert message={error} type={networkError ? 'warning' : 'error'} />}
-      {movies.map((movie) => (
-        <MovieCard movie={movie} key={movie.id} />
-      ))}
+      {!networkError && movies.map((movie) => <MovieCard movie={movie} key={movie.id} networkError={networkError} />)}
       <Pagination total={totalPages} current={page} onChange={(page) => setPage(page)} />
     </div>
   )

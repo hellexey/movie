@@ -15,6 +15,7 @@ const defaultPoster =
 
 interface MovieCardProps {
   movie: IMovie
+  networkError: boolean
 }
 
 const MovieCard = ({ movie }: MovieCardProps) => {
